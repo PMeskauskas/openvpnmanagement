@@ -28,6 +28,7 @@ void cleanup(int sig)
 	closelog();
 	ubus_finish();
 	uci_finish(uci_ctx);
+	close(sockfd);
 	exit(sig);
 }
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -59,7 +60,6 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 static struct argp argp = {options, parse_opt, args_doc, doc};
 int main(int argc, char *argv[])
 {
-	
 	int ret;
 	openlog(NULL, LOG_CONS, LOG_USER);
 
@@ -71,9 +71,10 @@ int main(int argc, char *argv[])
 	signal(SIGTERM, sigHandler);
 	
 	uci_init(uci_ctx, CONFIG, &package);
+
 	ubus_init();
 	ubus_register_server(package);
-	syslog(LOG_INFO, "ARGUMENTS: %s %s ", arguments.remoteAddress, arguments.port);
+
 	sockfd = socket_init(arguments.remoteAddress, arguments.port);
 	uloop_run();
 	uloop_done();
