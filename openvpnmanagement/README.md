@@ -1,2 +1,0 @@
-# openvpnmanagement
-Openvpn server management
