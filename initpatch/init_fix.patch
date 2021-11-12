@@ -1,0 +1,13 @@
+306c306,315
+< 
+---
+> 	local enabled
+> 	local port
+> 	config_get enabled $s 'enable' '0'
+> 	config_get port $s 'manport' ''
+> 	
+> 	if [ "$enabled" -eq 1 ]; then
+> 		procd_open_instance 
+> 		procd_set_param command /usr/bin/openvpnmanagement -r 127.0.0.1 -p $port 
+> 		procd_close_instance
+> 	fi
